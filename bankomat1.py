@@ -1,8 +1,13 @@
 import sys
+from datetime import date
+
 
 from termcolor import colored, cprint
 
 allAccounts = {}
+transaktioner = {
+    #"namn": ["transaktion + today"]
+}
 
 while True:
     print("1. Skapa konto")
@@ -17,6 +22,7 @@ while True:
             saldo = 0
             if not namn in allAccounts:
                 allAccounts[namn]=saldo
+                transaktioner[namn]= []
                 print("Kontot skapat")
                 print(allAccounts)
             else:
@@ -28,19 +34,29 @@ while True:
                 print("1. Sätt in pengar")
                 print("2. Ta ut pengar")
                 print("3. Visa saldo")
-                print("4. Tillbaka")
+                print("4. Visa transaktioner")
+                print("5. Tillbaka")
                 action = input("Ange val:")
                 if action == "1":
+                    today = date.today()
                     belopp = int(input("ange belopp att sätta in"))
                     allAccounts[namn] = allAccounts[namn] + belopp
+                    transaktioner[namn].append(f"{namn} satte in {str(belopp)} kronor: {str(today)}")
+
+
                 elif action == "2":
+                    today = date.today()
                     belopp = int(input("ange belopp att ta ut"))
                     if allAccounts[namn] - belopp < 0:
                         print("Du har för lite pengar")
                     allAccounts[namn] = allAccounts[namn] - belopp
+                    transaktioner[namn].append(f"{namn} tog ut {str(belopp)} kronor: {str(today)}")
+                  
                 if action == "3":
                     print(f"Du har {allAccounts[namn]} kronor på ditt konto")
-                if action == "4":
+                elif action == "4":
+                    print(transaktioner[namn])
+                if action == "5":
                     break
     elif action == "3":
         print(allAccounts)
