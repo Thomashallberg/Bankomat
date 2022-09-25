@@ -1,0 +1,4 @@
+Thomas 100
+Pelle 1000000
+Rasmus 700000
+Håkan -200
