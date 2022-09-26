@@ -1,10 +1,8 @@
 from contextlib import nullcontext
 import sys
-from datetime import date
-from tkinter import N
-
-
+from datetime import date, timedelta
 from termcolor import colored, cprint
+
 transaktioner = {}
 def ReadFromFile():
     AllaKonton = {}
@@ -18,6 +16,11 @@ def ReadFromFile():
             transaktioner [kontonamn[0]] = []
             #print(AllaKonton)
     return AllaKonton
+
+def AddToFile(allAccounts):
+    with open("saldo.txt", "w") as myfile:
+        for namn in allAccounts:
+            myfile.write(f"{namn} {allAccounts[namn]}\n")
 allAccounts = ReadFromFile()
     #"namn": ["transaktion + today"]
 
@@ -38,8 +41,10 @@ while True:
                 transaktioner[namn]= []
                 print("Kontot skapat")
                 print(allAccounts)
+                # Spara allaKonton till fil
             else:
-             print("Kontonamnet finns redan, hitta på ett nytt")
+                print("Kontonamnet finns redan, hitta på ett nytt")
+            AddToFile(allAccounts)
     elif action == "2":
         NuvarandeKonto = input("vilket konto vill du administrera?")
         if NuvarandeKonto in allAccounts:
@@ -55,7 +60,7 @@ while True:
                     belopp = int(input("ange belopp att sätta in"))
                     allAccounts[NuvarandeKonto] = allAccounts[NuvarandeKonto] + belopp
                     transaktioner[NuvarandeKonto].append(f"{NuvarandeKonto} satte in {str(belopp)} kronor: {str(today)}")
-
+                    AddToFile(allAccounts)
 
                 elif action == "2":
                     today = date.today()
@@ -64,20 +69,22 @@ while True:
                         print("Du har för lite pengar")
                     allAccounts[NuvarandeKonto] = allAccounts[NuvarandeKonto] - belopp
                     transaktioner[NuvarandeKonto].append(f"{NuvarandeKonto} tog ut {str(belopp)} kronor: {str(today)}")
-                  
+                    AddToFile(allAccounts)
                 if action == "3":
                     print(f"Du har {allAccounts[NuvarandeKonto]} kronor på ditt konto")
+
                 elif action == "4":
                     print(transaktioner[NuvarandeKonto])
                     
                 if action == "5":
                     break
+                
     elif action == "3":
         print(allAccounts)
         inmatning = input("Vilket konto vill du ta bort?")
         if inmatning in allAccounts:
             del allAccounts[inmatning]
             print(allAccounts)
-
+            AddToFile(allAccounts)
     elif action == "4":
         exit()
