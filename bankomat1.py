@@ -3,19 +3,28 @@ import sys
 from datetime import date, timedelta
 from termcolor import colored, cprint
 
-transaktioner = {}
+
+
 def ReadFromFile():
     AllaKonton = {}
 
-    with open("saldo.txt", "r") as filen:
+    with open("saldo.txt", "r") as filen: 
         for raden in filen:
             kontonamn = raden.split()
-            print (f"{kontonamn[0]}")
+            print (f"{kontonamn[0]}")   #Behåller som print för att enklare testa programmet
             print (f"{kontonamn[1]}")
             AllaKonton[kontonamn[0]] = int(kontonamn[1])
-            transaktioner [kontonamn[0]] = []
+            #transaktioner [kontonamn[0]] = []
             #print(AllaKonton)
     return AllaKonton
+def AddTransactionToFile(transaktioner):
+    with open("transaktioner.txt", "w") as myfile:
+        for namn in transaktioner:
+            
+            for x in transaktioner[namn]:
+                myfile.write(f"{x} \n")
+
+
 
 def AddToFile(allAccounts):
     with open("saldo.txt", "w") as myfile:
@@ -23,6 +32,25 @@ def AddToFile(allAccounts):
             myfile.write(f"{namn} {allAccounts[namn]}\n")
 allAccounts = ReadFromFile()
     #"namn": ["transaktion + today"]
+
+
+def ReadTransaktion():
+    transaktioner = {}
+    
+   
+    
+    with open("transaktioner.txt", "r") as filen:
+        for raden in filen:
+            namnsplit = raden.split()
+            namnet = namnsplit[0]
+            if not namnet in transaktioner:
+                transaktioner[namnet] = []
+                transaktioner[namnet].append(raden)
+            elif namnet in transaktioner:
+                transaktioner[namnet].append(raden)
+
+        return transaktioner
+transaktioner = ReadTransaktion()
 
 
 while True:
@@ -36,15 +64,18 @@ while True:
             person = inmatning
             namn = person
             saldo = 0
+            if not namn in transaktioner:
+                transaktioner[namn]= []
             if not namn in allAccounts:
                 allAccounts[namn]=saldo
-                transaktioner[namn]= []
                 print("Kontot skapat")
                 print(allAccounts)
+                AddToFile(allAccounts)
                 # Spara allaKonton till fil
             else:
                 print("Kontonamnet finns redan, hitta på ett nytt")
-            AddToFile(allAccounts)
+                AddToFile(allAccounts)
+            
     elif action == "2":
         NuvarandeKonto = input("vilket konto vill du administrera?")
         if NuvarandeKonto in allAccounts:
@@ -61,7 +92,7 @@ while True:
                     allAccounts[NuvarandeKonto] = allAccounts[NuvarandeKonto] + belopp
                     transaktioner[NuvarandeKonto].append(f"{NuvarandeKonto} satte in {str(belopp)} kronor: {str(today)}")
                     AddToFile(allAccounts)
-
+                    AddTransactionToFile(transaktioner)
                 elif action == "2":
                     today = date.today()
                     belopp = int(input("ange belopp att ta ut"))
@@ -70,6 +101,7 @@ while True:
                     allAccounts[NuvarandeKonto] = allAccounts[NuvarandeKonto] - belopp
                     transaktioner[NuvarandeKonto].append(f"{NuvarandeKonto} tog ut {str(belopp)} kronor: {str(today)}")
                     AddToFile(allAccounts)
+                    AddTransactionToFile(transaktioner)
                 if action == "3":
                     print(f"Du har {allAccounts[NuvarandeKonto]} kronor på ditt konto")
 
