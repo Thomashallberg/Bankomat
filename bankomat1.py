@@ -3,17 +3,18 @@ import sys
 from datetime import date, timedelta
 from termcolor import colored, cprint
 
-transaktioner = {}
+
+
 def ReadFromFile():
     AllaKonton = {}
 
-    with open("saldo.txt", "r") as filen:
+    with open("saldo.txt", "r") as filen: 
         for raden in filen:
             kontonamn = raden.split()
-            print (f"{kontonamn[0]}")
+            print (f"{kontonamn[0]}")   #Behåller som print för att enklare testa programmet
             print (f"{kontonamn[1]}")
             AllaKonton[kontonamn[0]] = int(kontonamn[1])
-            transaktioner [kontonamn[0]] = []
+            #transaktioner [kontonamn[0]] = []
             #print(AllaKonton)
     return AllaKonton
 
@@ -23,6 +24,25 @@ def AddToFile(allAccounts):
             myfile.write(f"{namn} {allAccounts[namn]}\n")
 allAccounts = ReadFromFile()
     #"namn": ["transaktion + today"]
+
+
+def ReadTransaktion():
+    transaktioner = {}
+    
+   
+    
+    with open("transaktioner.txt", "r") as filen:
+        for raden in filen:
+            namnsplit = raden.split()
+            namnet = namnsplit[0]
+            if not namnet in transaktioner:
+                transaktioner[namnet] = []
+                transaktioner[namnet].append(raden)
+            elif namnet in transaktioner:
+                transaktioner[namnet].append(raden)
+
+        return transaktioner
+transaktioner = ReadTransaktion()
 
 
 while True:
