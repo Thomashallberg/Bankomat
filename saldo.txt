@@ -1,3 +1,0 @@
-Thomas 100
-Pelle 200
-Rasmus 0
