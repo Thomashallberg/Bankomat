@@ -43,7 +43,7 @@ def ReadTransaktion():
 transaktioner = ReadTransaktion()
 
 while True:
-    print("1. Skapa konto")
+    print("1. Skapa konto", "")
     print("2. Administrera konto")
     print("3. Ta bort konto")
     print("4. Avsluta")
@@ -69,8 +69,8 @@ while True:
         NuvarandeKonto = input("vilket konto vill du administrera?")
         if NuvarandeKonto in allAccounts:
             while True:
-                print("1. Sätt in pengar")
-                print("2. Ta ut pengar")
+                cprint("1. Sätt in pengar","green")
+                cprint("2. Ta ut pengar","red")
                 print("3. Visa saldo")
                 print("4. Visa transaktioner")
                 print("5. Tillbaka")
@@ -83,13 +83,15 @@ while True:
                         transaktioner[NuvarandeKonto].append(f"{NuvarandeKonto} satte in {str(belopp)} kronor: {str(today)}")
                         AddToFile(allAccounts)
                         AddTransactionToFile(transaktioner)
+                        cprint(f"{NuvarandeKonto} satte in {str(belopp)} kronor: {str(today)}","green")
                     else:
-                        print("Du måste ange ett positivt nummer")
+                        cprint("Du måste ange ett positivt nummer","red","on_yellow")
                 elif action == "2":
                     belopp = int(input("ange belopp att ta ut"))
+                    cprint(f"Du tog ut {belopp} kronor","red")
                     if belopp > 0:
                         if allAccounts[NuvarandeKonto] - belopp < 0:
-                            print("Du har för lite pengar")
+                            cprint("Du har för lite pengar","red","on_yellow")
                         else:
                             today = date.today()
                             allAccounts[NuvarandeKonto] = allAccounts[NuvarandeKonto] - belopp
@@ -97,9 +99,9 @@ while True:
                             AddToFile(allAccounts)
                             AddTransactionToFile(transaktioner)
                     else:
-                        print("Du måste ange ett positivt nummer")
+                        cprint("Du måste ange ett positivt nummer","red","on_yellow")
                 if action == "3":
-                    print(f"Du har {allAccounts[NuvarandeKonto]} kronor på ditt konto")
+                    cprint(f"Du har {allAccounts[NuvarandeKonto]} kronor på ditt konto","green")
 
                 elif action == "4":
                     print(transaktioner[NuvarandeKonto])
@@ -110,6 +112,7 @@ while True:
     elif action == "3":
         print(allAccounts)
         inmatning = input("Vilket konto vill du ta bort?")
+        cprint(f"tog bort{inmatning}","green")
         if inmatning in allAccounts:
             del allAccounts[inmatning]
             print(allAccounts)
