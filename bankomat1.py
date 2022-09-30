@@ -1,4 +1,3 @@
-from contextlib import nullcontext
 import sys
 from datetime import date, timedelta
 from termcolor import colored, cprint
@@ -11,12 +10,9 @@ def ReadFromFile():
     with open("saldo.txt", "r") as filen: 
         for raden in filen:
             kontonamn = raden.split()
-            print (f"{kontonamn[0]}")   #Behåller som print för att enklare testa programmet
-            print (f"{kontonamn[1]}")
             AllaKonton[kontonamn[0]] = int(kontonamn[1])
-            #transaktioner [kontonamn[0]] = []
-            #print(AllaKonton)
     return AllaKonton
+
 def AddTransactionToFile(transaktioner):
     with open("transaktioner.txt", "w") as myfile:
         for namn in transaktioner:
@@ -24,21 +20,15 @@ def AddTransactionToFile(transaktioner):
             for x in transaktioner[namn]:
                 myfile.write(f"{x} \n")
 
-
-
 def AddToFile(allAccounts):
     with open("saldo.txt", "w") as myfile:
         for namn in allAccounts:
             myfile.write(f"{namn} {allAccounts[namn]}\n")
 allAccounts = ReadFromFile()
-    #"namn": ["transaktion + today"]
-
-
+    
 def ReadTransaktion():
     transaktioner = {}
-    
-   
-    
+        
     with open("transaktioner.txt", "r") as filen:
         for raden in filen:
             namnsplit = raden.split()
@@ -51,7 +41,6 @@ def ReadTransaktion():
 
         return transaktioner
 transaktioner = ReadTransaktion()
-
 
 while True:
     print("1. Skapa konto")
@@ -71,7 +60,7 @@ while True:
                 print("Kontot skapat")
                 print(allAccounts)
                 AddToFile(allAccounts)
-                # Spara allaKonton till fil
+                
             else:
                 print("Kontonamnet finns redan, hitta på ett nytt")
                 AddToFile(allAccounts)
@@ -87,21 +76,28 @@ while True:
                 print("5. Tillbaka")
                 action = input("Ange val:")
                 if action == "1":
-                    today = date.today()
                     belopp = int(input("ange belopp att sätta in"))
-                    allAccounts[NuvarandeKonto] = allAccounts[NuvarandeKonto] + belopp
-                    transaktioner[NuvarandeKonto].append(f"{NuvarandeKonto} satte in {str(belopp)} kronor: {str(today)}")
-                    AddToFile(allAccounts)
-                    AddTransactionToFile(transaktioner)
+                    if belopp > 0:
+                        today = date.today()
+                        allAccounts[NuvarandeKonto] = allAccounts[NuvarandeKonto] + belopp
+                        transaktioner[NuvarandeKonto].append(f"{NuvarandeKonto} satte in {str(belopp)} kronor: {str(today)}")
+                        AddToFile(allAccounts)
+                        AddTransactionToFile(transaktioner)
+                    else:
+                        print("Du måste ange ett positivt nummer")
                 elif action == "2":
-                    today = date.today()
                     belopp = int(input("ange belopp att ta ut"))
-                    if allAccounts[NuvarandeKonto] - belopp < 0:
-                        print("Du har för lite pengar")
-                    allAccounts[NuvarandeKonto] = allAccounts[NuvarandeKonto] - belopp
-                    transaktioner[NuvarandeKonto].append(f"{NuvarandeKonto} tog ut {str(belopp)} kronor: {str(today)}")
-                    AddToFile(allAccounts)
-                    AddTransactionToFile(transaktioner)
+                    if belopp > 0:
+                        if allAccounts[NuvarandeKonto] - belopp < 0:
+                            print("Du har för lite pengar")
+                        else:
+                            today = date.today()
+                            allAccounts[NuvarandeKonto] = allAccounts[NuvarandeKonto] - belopp
+                            transaktioner[NuvarandeKonto].append(f"{NuvarandeKonto} tog ut {str(belopp)} kronor: {str(today)}")
+                            AddToFile(allAccounts)
+                            AddTransactionToFile(transaktioner)
+                    else:
+                        print("Du måste ange ett positivt nummer")
                 if action == "3":
                     print(f"Du har {allAccounts[NuvarandeKonto]} kronor på ditt konto")
 
